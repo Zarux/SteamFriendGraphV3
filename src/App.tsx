@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Graph from "./components/Graph/Graph";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type AppContextProps = {
+    ws: WebSocket | null
+    urlParams: URLSearchParams | null
+}
+
+export const AppContext = React.createContext<AppContextProps>({
+    ws: null,
+    urlParams: null
+})
+
+type Props = {
+    ws: WebSocket
+}
+
+const App = ({ws}: Props) => {
+    ws.onopen = () => {
+        ws.send(JSON.stringify({endpoint: "ping", id: "0"}))
+    }
+    const windowUrl = window.location.search;
+    const params = new URLSearchParams(windowUrl);
+    return (
+        <div className="App">
+            <AppContext.Provider value={{ws: ws, urlParams: params}}>
+                <Graph />
+            </AppContext.Provider>
+        </div>
+    );
 }
 
 export default App;
