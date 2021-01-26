@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(0, 1),
         justifyContent: 'flex-end'
     },
+    drawerHeaderRight: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        justifyContent: 'flex-start'
+    },
     margin: {
         width: '90%',
         marginLeft: 'auto',

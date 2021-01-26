@@ -1,6 +1,6 @@
 import {Input, Slider, Typography} from "@material-ui/core";
 import React from "react";
-import useStyles from "../styles";
+import useStyles from "../../styles";
 
 type SliderSettingProps = {
     label: string
@@ -13,6 +13,7 @@ type SliderSettingProps = {
 }
 
 const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max, step}: SliderSettingProps) => {
+    console.log(label, value)
     const classes = useStyles();
     return <div className={classes.margin}>
         <Typography className={classes.text} id="discrete-slider-min-degree">
@@ -43,7 +44,6 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
             inputProps={{
                 step: step,
                 min: min,
-                max: max,
                 type: 'number',
                 'aria-labelledby': 'discrete-slider-min-degree',
             }}

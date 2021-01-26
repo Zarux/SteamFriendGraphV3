@@ -12,23 +12,22 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import React, {useContext} from "react";
 import {useState} from "react"
 import SearchIcon from "@material-ui/icons/Search";
-import {GSettings} from "../../types";
-import {AppContext} from "../../App";
-import useStyles from "./styles";
+import {GSettings} from "../../../types/types";
+import {AppContext} from "../../../App";
+import useStyles from "../styles";
 import SliderSetting from "./SettingComponents/SliderSetting";
 
-
 type Props = {
-    onGenerate: CallableFunction
-    onPartialUpdate: CallableFunction
+    settings: GSettings
+    onSettingChange: (settings: GSettings) => void
+    onGenerate: (id: string) => void
 }
 
-const GraphSettings = ({onGenerate, onPartialUpdate}: Props) => {
+const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
     const context = useContext(AppContext)
     const classes = useStyles();
     const [open, setOpen] = useState(true);
-    const [settings, setSettings] = useState<GSettings>({})
-    const [id, setId] = useState((context.urlParams && context.urlParams.get("id")) || "")
+    const [id, setId] = useState((context.url && context.url.searchParams.get("id")) || "")
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -40,15 +39,14 @@ const GraphSettings = ({onGenerate, onPartialUpdate}: Props) => {
 
     const handleChange = (prop: keyof GSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
         if (typeof settings[prop] === "number") {
-            setSettings({...settings, [prop]: parseInt(event.target.value)});
+            onSettingChange({...settings, [prop]: parseInt(event.target.value)});
             return
         }
-        setSettings({...settings, [prop]: event.target.value});
+        onSettingChange({...settings, [prop]: event.target.value});
     };
 
     const handleSliderChange = (prop: keyof GSettings) => (event: any, newValue: number | number[]) => {
-        setSettings({...settings, [prop]: newValue});
-        onPartialUpdate(settings)
+        onSettingChange({...settings, [prop]: newValue});
     }
 
     return (
@@ -104,9 +102,9 @@ const GraphSettings = ({onGenerate, onPartialUpdate}: Props) => {
                 <Divider/>
                 <SliderSetting
                     label="Minimum degrees"
-                    value={settings.minDegrees || 2}
+                    value={settings.minDegrees}
                     min={1}
-                    max={100}
+                    max={10}
                     handleChange={handleChange("minDegrees")}
                     handleSliderChange={handleSliderChange("minDegrees")}
                 />
@@ -121,7 +119,7 @@ const GraphSettings = ({onGenerate, onPartialUpdate}: Props) => {
                         }}
                         variant="outlined"
                         onClick={() => {
-                            onGenerate(id, settings)
+                            onGenerate(id)
                         }}
                     >
                         Generate graph

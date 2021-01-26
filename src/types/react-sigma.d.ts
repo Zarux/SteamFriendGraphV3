@@ -12,6 +12,7 @@ type SigmaNode = {
     y?: number
     size?: number
     color?: string
+    originalColor?: string
 }
 
 type SigmaEdge = {
@@ -20,4 +21,17 @@ type SigmaEdge = {
     target: string
     label?: string
     color?: string
+    originalColor?: string
+}
+
+type SigmaNodeEvent = {
+    type: string
+    data: {
+        renderer?: any
+        node: SigmaNode
+        captor: {
+            clientX: number,
+            clientY: number
+        }
+    }
 }
