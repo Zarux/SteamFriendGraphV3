@@ -41,6 +41,26 @@ export type FriendGraph = {
 
 export type GSettings = {
     minDegrees: number
+    timeoutMultiplier: number
     scalingMode: string
     iterationsPerRender: number
+    startingIterations: number
+    gravity: number
+    linLogMode: boolean
+    barnesHutTheta: number
+    strongGravityMode: boolean
+    background: boolean
+    scalingRatio: number
+    maxNodeSize: number
+    minNodeSize: number
+}
+
+type Progress = {
+    complete: boolean
+}
+
+export type ProgressStatus = {
+    friends?: Progress
+    labels?: Progress
+    graph?: Progress
 }

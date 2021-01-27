@@ -3,7 +3,7 @@ import {Theme} from "@material-ui/core";
 
 const drawerWidth = 350;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useGlobalStyles = makeStyles((theme: Theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: 10
     },
     text: {
-        color: 'white'
+        color: 'rgb(170, 170, 170)',
+        fontSize: '12px'
     },
     drawerFooter: {
         position: "fixed",
@@ -41,6 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 50,
         width: "inherit"
     },
+    drawerItem: {
+        width: "90%",
+        border: "1px solid #1C262F",
+        backgroundColor: "#2a2c32",
+        borderRadius: "2px",
+        padding: "7px"
+    },
+    compactListItem: {
+        paddingTop: 0,
+        paddingBottom: 0
+    }
 }));
 
-export default useStyles
+export default useGlobalStyles

@@ -5,30 +5,35 @@ import {
     FormControl,
     OutlinedInput,
     InputAdornment,
-    Button
+    Button, List, ListItem, Accordion, AccordionSummary
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import React, {useContext} from "react";
-import {useState} from "react"
+import GitHubIcon from '@material-ui/icons/GitHub';
 import SearchIcon from "@material-ui/icons/Search";
-import {GSettings} from "../../../types/types";
+import React, {useContext, useState} from "react";
+import {GSettings, ProgressStatus} from "../../../types/types";
 import {AppContext} from "../../../App";
-import useStyles from "../styles";
+import useGlobalStyles from "../styles";
 import SliderSetting from "./SettingComponents/SliderSetting";
+import ProgressIndicator from "./ProgressIndicator";
+import GeneralSettings from "./GeneralSettings";
+import AdvancedSettings from "./AdvancedSettings";
+
 
 type Props = {
     settings: GSettings
     onSettingChange: (settings: GSettings) => void
-    onGenerate: (id: string) => void
+    onGenerate: (id: string) => void,
+    progressStatus: ProgressStatus
 }
 
-const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
+const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: Props) => {
     const context = useContext(AppContext)
-    const classes = useStyles();
+    const classes = useGlobalStyles();
     const [open, setOpen] = useState(true);
     const [id, setId] = useState((context.url && context.url.searchParams.get("id")) || "")
-
+    console.log(progressStatus)
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -39,7 +44,7 @@ const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
 
     const handleChange = (prop: keyof GSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
         if (typeof settings[prop] === "number") {
-            onSettingChange({...settings, [prop]: parseInt(event.target.value)});
+            onSettingChange({...settings, [prop]: parseFloat(event.target.value)});
             return
         }
         onSettingChange({...settings, [prop]: event.target.value});
@@ -48,6 +53,7 @@ const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
     const handleSliderChange = (prop: keyof GSettings) => (event: any, newValue: number | number[]) => {
         onSettingChange({...settings, [prop]: newValue});
     }
+    const inProgress = progressStatus.graph !== undefined || progressStatus.friends !== undefined || progressStatus.labels !== undefined
 
     return (
         <div
@@ -61,8 +67,11 @@ const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerOpen}
+                style={{
+                    marginLeft: "10px"
+                }}
             >
-                <MenuIcon/>
+                <MenuIcon fontSize="large"/>
             </IconButton>
             <Drawer
                 className={classes.drawer}
@@ -108,24 +117,72 @@ const GraphSettings = ({settings, onGenerate, onSettingChange}: Props) => {
                     handleChange={handleChange("minDegrees")}
                     handleSliderChange={handleSliderChange("minDegrees")}
                 />
+                <Divider/>
+                <GeneralSettings
+                    settings={settings}
+                    handleChange={handleChange}
+                    handleSliderChange={handleSliderChange}
+                />
+                <AdvancedSettings
+                    settings={settings}
+                    handleChange={handleChange}
+                    handleSliderChange={handleSliderChange}
+                />
                 <div className={classes.drawerFooter}>
                     <Divider/>
-                    <Button
-                        className={classes.margin}
-                        style={{
-                            color: "#aaa",
-                            borderColor: "#aaa",
-                            height: "75px"
-                        }}
-                        variant="outlined"
-                        onClick={() => {
-                            onGenerate(id)
-                        }}
-                    >
-                        Generate graph
-                    </Button>
+                    {
+                        !inProgress &&
+                        <Button
+                            className={classes.margin}
+                            style={{
+                                color: "#aaa",
+                                borderColor: "#aaa",
+                                height: "75px"
+                            }}
+                            variant="outlined"
+                            onClick={() => {
+                                onGenerate(id)
+                            }}
+                        >
+                            Generate graph
+                        </Button>
+                    }
+                    <List>
+                        {
+                            progressStatus.friends !== undefined &&
+                            <ListItem>
+                                <ProgressIndicator
+                                    label={"Generating friendships"}
+                                    complete={progressStatus.friends.complete}
+                                />
+                            </ListItem>
+                        }
+                        {
+                            progressStatus.labels !== undefined &&
+                            <ListItem>
+                                <ProgressIndicator
+                                    label={"Generating labels"}
+                                    complete={progressStatus.labels.complete}
+                                />
+                            </ListItem>
+                        }
+                        {
+                            progressStatus.graph !== undefined &&
+                            <ListItem>
+                                <ProgressIndicator
+                                    label={"Laying out graph"}
+                                    complete={progressStatus.graph.complete}
+                                />
+                            </ListItem>
+                        }
+                    </List>
+                    <Divider/>
                 </div>
-                <Divider/>
+                <div className={classes.drawerFooter} style={{marginLeft: 10, paddingBottom: 5, textAlign: "left"}}>
+                    <IconButton href="https://github.com/Zarux/SteamFriendGraphV3">
+                        <GitHubIcon style={{color: "white"}}/>
+                    </IconButton>
+                </div>
             </Drawer>
         </div>
     )

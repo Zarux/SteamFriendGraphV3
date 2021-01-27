@@ -1,6 +1,7 @@
 import {Input, Slider, Typography} from "@material-ui/core";
 import React from "react";
-import useStyles from "../../styles";
+import useGlobalStyles from "../../styles";
+import clsx from "clsx";
 
 type SliderSettingProps = {
     label: string
@@ -13,42 +14,44 @@ type SliderSettingProps = {
 }
 
 const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max, step}: SliderSettingProps) => {
-    console.log(label, value)
-    const classes = useStyles();
-    return <div className={classes.margin}>
-        <Typography className={classes.text} id="discrete-slider-min-degree">
-            {label}
-        </Typography>
-        <Slider
-            style={{
-                width: "80%"
-            }}
-            value={value}
-            step={step}
-            valueLabelDisplay="off"
-            min={min}
-            max={max}
-            aria-labelledby="discrete-slider-min-degree"
-            onChange={handleSliderChange}
-        />
-        <Input
-            className={classes.text}
-            style={{
-                width: "15%",
-                verticalAlign: "top",
-                marginLeft: "2%"
-            }}
-            value={value}
-            onChange={handleChange}
-            margin="dense"
-            inputProps={{
-                step: step,
-                min: min,
-                type: 'number',
-                'aria-labelledby': 'discrete-slider-min-degree',
-            }}
-        />
-    </div>
+    const classes = useGlobalStyles();
+    return (
+        <div className={clsx(classes.margin, classes.drawerItem)}>
+            <Typography className={classes.text} id="discrete-slider-min-degree">
+                {label}
+            </Typography>
+            <Slider
+                style={{
+                    width: "80%"
+                }}
+                value={value}
+                step={step}
+                valueLabelDisplay="off"
+                min={min}
+                max={max}
+                aria-labelledby="discrete-slider-min-degree"
+                onChange={handleSliderChange}
+            />
+            <Input
+                className={classes.text}
+                style={{
+                    width: "14%",
+                    verticalAlign: "top",
+                    marginLeft: "5%"
+                }}
+                value={value}
+                onChange={handleChange}
+                margin="dense"
+                inputProps={{
+                    step: step,
+                    min: min,
+                    type: 'number',
+                    'aria-labelledby': 'discrete-slider-min-degree',
+                    style: {textAlign: "center"}
+                }}
+            />
+        </div>
+    )
 }
 
 export default SliderSetting

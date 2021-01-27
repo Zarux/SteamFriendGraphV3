@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 type Props = {
     profile?: SteamProfile
+    onHover: ((profileId: string) => void)[]
     root?: boolean
 }
 
@@ -50,14 +51,21 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const Profile = ({profile, root}: Props) => {
+const Profile = ({profile, root, onHover}: Props) => {
     const classes = useStyles();
     if (profile === undefined) {
         return <div/>
     }
     return (
         <div
-            className={clsx(classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline), root && classes.rootRoot)}>
+            className={clsx(classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline), root && classes.rootRoot)}
+            onMouseEnter={()=>{
+                onHover[0](profile?.steamid)
+            }}
+            onMouseLeave={()=>{
+                onHover[1](profile?.steamid)
+            }}
+        >
             <div style={{
                 borderRightStyle: "solid",
                 borderRightWidth: "4px"

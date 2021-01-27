@@ -2,14 +2,24 @@ import { useEffect } from "react"
 
 type Props = {
     sigma?: any,
-    rootId?: string
+    markedNode?: string
     timeout: number
+    defaultColor?: string
 }
 
-const SigmaColors = ({sigma, rootId, timeout}: Props) => {
+const SigmaColors = ({sigma, markedNode, timeout, defaultColor}: Props) => {
+
+    useEffect(() => {
+        colorNodes(sigma, markedNode).then(() => {
+            sigma.graph.nodes().forEach((n: SigmaNode) => {
+                n.originalColor = n.color;
+            });
+        })
+    }, [markedNode])
+
     useEffect(() => {
         setTimeout(async () => {
-            await colorNodes(sigma, rootId)
+            await colorNodes(sigma, markedNode)
             sigma.graph.nodes().forEach((n: SigmaNode) => {
                 n.originalColor = n.color;
             });
@@ -17,11 +27,28 @@ const SigmaColors = ({sigma, rootId, timeout}: Props) => {
                 e.originalColor = e.color;
             });
         }, timeout)
-    }, [rootId, sigma, timeout])
+    }, [timeout])
+
+    useEffect(() => {
+        colorNodes(sigma, markedNode, defaultColor)
+    }, [sigma])
+
     return null
 }
 
-const colorNodes = async (sigma: any, rootId?: string) => {
+const colorNodes = async (sigma: any, markedNode?: string, def?: string) => {
+    if(def){
+        sigma.graph.nodes().forEach((n: SigmaNode) => {
+            if(n.id === markedNode){
+                n.color = "rgb(200,68,68)"
+            }else{
+                n.color = def
+            }
+        })
+        sigma.refresh()
+        return
+    }
+
     const coords: { x: number[], y: number[] } = {
         x: [],
         y: []
@@ -42,7 +69,11 @@ const colorNodes = async (sigma: any, rootId?: string) => {
         const g = Math.ceil(Math.max(((n.x || 0) + Math.abs(xLow)) * xFactor, 100));
         const b = Math.ceil(Math.max(((n.y || 0) + Math.abs(yLow)) * yFactor, 100));
         const r = 0;
-        n.color = `rgb(${r}, ${g}, ${b})`
+        if(n.id === markedNode){
+            n.color = `rgb(${200}, ${Math.ceil(g/2)}, ${Math.ceil(g/2)})`
+        }else{
+            n.color = `rgb(${r}, ${g}, ${b})`
+        }
     })
     sigma.refresh()
     return null

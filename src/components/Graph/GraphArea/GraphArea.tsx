@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Sigma,
     SigmaEnableWebGL,
@@ -16,7 +16,8 @@ type Props = {
     graph: SigmaGraph,
     labels: Labels,
     settings: GSettings
-    rootId?: string
+    markedNode?: string,
+    onComplete?: () => void
 }
 
 const highligtAdj = (nodeEvent: SigmaNodeEvent) => {
@@ -27,28 +28,38 @@ const highligtAdj = (nodeEvent: SigmaNodeEvent) => {
     ])
     console.log(aNodes)
     sigma.graph.nodes().forEach((n: SigmaNode) => {
-        if(aNodes.has(n.id)){
+        if (aNodes.has(n.id)) {
             n.color = n.originalColor
-        }else{
+        } else {
             n.color = "#303332a"
         }
     })
     sigma.graph.edges().forEach((e: SigmaEdge) => {
-        if(aNodes.has(e.source) && aNodes.has(e.target)){
+        if (aNodes.has(e.source) && aNodes.has(e.target)) {
             e.color = e.originalColor
-        }else{
+        } else {
             e.color = "#303332a"
 
         }
     })
 }
 
-const GraphArea = ({graph, labels, settings, rootId}: Props) => {
+const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => {
     const context = useContext(AppContext)
+    const timeout = graph.nodes.length * settings.timeoutMultiplier
+    const defColor = "rgb(0, 129, 112)"
+    useEffect(() => {
+        if (timeout && onComplete) {
+            setTimeout(() => {
+                onComplete()
+            }, timeout)
+        }
+    }, [graph, settings])
+
+
     if (!graph.nodes.length && !graph.edges.length) {
         return <div/>
     }
-    const timeout = graph.nodes.length * 1
 
     return (
         <Sigma
@@ -62,34 +73,34 @@ const GraphArea = ({graph, labels, settings, rootId}: Props) => {
                 immutable: false,
                 verbose: true,
                 defaultLabelColor: "#AAAAAA",
-                defaultNodeColor: "rgb(0, 129, 112)",
+                defaultNodeColor: defColor,
                 defaultEdgeColor: "#2e2e2e",
                 edgeColor: "default",
-                maxNodeSize: 15,
-                minNodeSize: 2,
+                maxNodeSize: settings.maxNodeSize,
+                minNodeSize: settings.minNodeSize,
+                zoomMax: 3
             }}
             style={{
                 width: "90%",
                 height: "98vh",
             }}
             onClickNode={(nodeEvent: SigmaNodeEvent) => {
-                if(context.ws) {
+                if (context.ws) {
                     context.ws.send(JSON.stringify({endpoint: "getFriendProfiles", id: nodeEvent.data.node.id}))
                 }
-                
             }}
         >
             <SigmaEnableWebGL/>
-            <RelativeSize initialSize={2}/>
+            <RelativeSize initialSize={settings.minNodeSize}/>
 
             <ForceLink
                 barnesHutOptimize={true}
-                barnesHutTheta={1.0}
+                barnesHutTheta={settings.barnesHutTheta}
                 worker={true}
-                strongGravityMode={false}
-                gravity={0.4}
+                strongGravityMode={settings.strongGravityMode}
+                gravity={settings.gravity}
                 randomize="globally"
-                linLogMode={false}
+                linLogMode={settings.linLogMode}
                 iterationsPerRender={settings.iterationsPerRender}
                 alignNodeSiblings={true}
                 timeout={timeout}
@@ -97,8 +108,8 @@ const GraphArea = ({graph, labels, settings, rootId}: Props) => {
             <Filter nodesBy={function (this: any, n: SigmaNode) {
                 return this.degree(n.id) >= settings.minDegrees;
             }}/>
-            <SigmaLabels labels={labels} />
-            <SigmaColors rootId={rootId} timeout={timeout} />
+            <SigmaLabels labels={labels}/>
+            <SigmaColors markedNode={markedNode} timeout={timeout} defaultColor={defColor}/>
         </Sigma>
     )
 }

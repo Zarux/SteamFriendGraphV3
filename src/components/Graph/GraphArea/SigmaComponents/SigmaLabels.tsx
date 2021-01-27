@@ -14,7 +14,7 @@ const SigmaLabels = ({sigma, labels}: Props) => {
             }
         })
         sigma.refresh()
-    }, [sigma, labels])
+    }, [labels])
     return null
 }
 
