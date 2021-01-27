@@ -18,13 +18,13 @@ const defaultSettings: GSettings = {
     scalingMode: "outside",
     iterationsPerRender: 1,
     timeoutMultiplier: 2,
-    gravity: 0.4,
+    gravity: 0.5,
     barnesHutTheta: 1.0,
     startingIterations: 1,
     linLogMode: false,
     strongGravityMode: false,
     background: false,
-    scalingRatio: 1,
+    scalingRatio: 2,
     minNodeSize: 2,
     maxNodeSize: 15
 }
@@ -73,23 +73,21 @@ const Graph = () => {
     }
 
     useEffect(() => {
-        if(graphRendered && progress.graph){
+        if (graphRendered && progress.graph) {
             setProgress({...progress, graph: {complete: true}})
         }
     }, [graphRendered])
 
     useEffect(() => {
-        if(progress.graph?.complete && progress.labels?.complete && progress.friends?.complete){
-            setTimeout(() => {
-                setProgress({})
-            }, 1000)
+        if (progress.graph?.complete && progress.labels?.complete && progress.friends?.complete) {
+            setProgress({})
         }
-    }, [progress])
+    }, [tempGSettings])
 
     const onGenerate = (id: string) => {
         setGraphRendered(false)
         setGSettings(tempGSettings)
-        if(id === lastSearch){
+        if (id === lastSearch) {
             setProgress({
                 friends: {complete: true},
                 graph: {complete: false},
@@ -128,6 +126,11 @@ const Graph = () => {
         <div>
             <GraphSettings
                 settings={tempGSettings}
+                onUserSearch={() => {
+                    if(progress.friends !== undefined) {
+                        setProgress({})
+                    }
+                }}
                 onGenerate={onGenerate}
                 onSettingChange={(settings: GSettings) => {
                     setGSettings({...gSettings, minDegrees: settings.minDegrees})

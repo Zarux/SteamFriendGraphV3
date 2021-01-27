@@ -16,13 +16,13 @@ const AdvancedSettings = ({settings, handleChange, handleSliderChange}: Props) =
     const classes = useGlobalStyles();
     return (
         <Accordion
-            style={{
-                backgroundColor: "inherit"
-            }}
+            className={classes.accordionBg}
         >
             <AccordionSummary
+                aria-controls="advanced-settings-content"
+                id="advanced-settings-header"
                 expandIcon={<ExpandMoreIcon />}
-                style={{minHeight: 0}}
+
             >
                 <span className={classes.text}>Advanced settings</span>
             </AccordionSummary>
@@ -44,8 +44,8 @@ const AdvancedSettings = ({settings, handleChange, handleSliderChange}: Props) =
                         label="Gravity"
                         value={settings.gravity}
                         min={0}
-                        max={5}
-                        step={0.2}
+                        max={10}
+                        step={0.5}
                         handleChange={handleChange("gravity")}
                         handleSliderChange={handleSliderChange("gravity")}
                     />

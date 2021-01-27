@@ -52,6 +52,9 @@ const useGlobalStyles = makeStyles((theme: Theme) => ({
     compactListItem: {
         paddingTop: 0,
         paddingBottom: 0
+    },
+    accordionBg: {
+        backgroundColor: "inherit"
     }
 }));
 

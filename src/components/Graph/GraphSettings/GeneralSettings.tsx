@@ -17,11 +17,11 @@ const GeneralSettings = ({settings, handleChange, handleSliderChange}: Props) =>
     return (
         <Accordion
             defaultExpanded
-            style={{
-                backgroundColor: "inherit"
-            }}
+            className={classes.accordionBg}
         >
             <AccordionSummary
+                aria-controls="general-settings-content"
+                id="general-settings-header"
                 expandIcon={<ExpandMoreIcon />}
                 style={{minHeight: 0}}
             >

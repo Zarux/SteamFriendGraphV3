@@ -60,7 +60,7 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
     if (!graph.nodes.length && !graph.edges.length) {
         return <div/>
     }
-
+    console.log(settings)
     return (
         <Sigma
             renderer="webgl"

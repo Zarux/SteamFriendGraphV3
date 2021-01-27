@@ -26,14 +26,14 @@ type Props = {
     onSettingChange: (settings: GSettings) => void
     onGenerate: (id: string) => void,
     progressStatus: ProgressStatus
+    onUserSearch: () => void
 }
 
-const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: Props) => {
+const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, onUserSearch}: Props) => {
     const context = useContext(AppContext)
     const classes = useGlobalStyles();
     const [open, setOpen] = useState(true);
     const [id, setId] = useState((context.url && context.url.searchParams.get("id")) || "")
-    console.log(progressStatus)
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -97,6 +97,7 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: 
                         value={id}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setId(event.target.value)
+                            onUserSearch()
                         }}
                         endAdornment={
                             <InputAdornment position="end">
@@ -118,17 +119,25 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: 
                     handleSliderChange={handleSliderChange("minDegrees")}
                 />
                 <Divider/>
-                <GeneralSettings
-                    settings={settings}
-                    handleChange={handleChange}
-                    handleSliderChange={handleSliderChange}
-                />
-                <AdvancedSettings
-                    settings={settings}
-                    handleChange={handleChange}
-                    handleSliderChange={handleSliderChange}
-                />
-                <div className={classes.drawerFooter}>
+                <div
+                    style={{
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        height: "55vh"
+                    }}
+                >
+                    <GeneralSettings
+                        settings={settings}
+                        handleChange={handleChange}
+                        handleSliderChange={handleSliderChange}
+                    />
+                    <AdvancedSettings
+                        settings={settings}
+                        handleChange={handleChange}
+                        handleSliderChange={handleSliderChange}
+                    />
+                </div>
+                <div className={classes.drawerFooter} style={{height: "19vh"}}>
                     <Divider/>
                     {
                         !inProgress &&
@@ -137,7 +146,8 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: 
                             style={{
                                 color: "#aaa",
                                 borderColor: "#aaa",
-                                height: "75px"
+                                height: "9vh",
+                                marginTop: "6vh"
                             }}
                             variant="outlined"
                             onClick={() => {
@@ -176,7 +186,6 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus}: 
                             </ListItem>
                         }
                     </List>
-                    <Divider/>
                 </div>
                 <div className={classes.drawerFooter} style={{marginLeft: 10, paddingBottom: 5, textAlign: "left"}}>
                     <IconButton href="https://github.com/Zarux/SteamFriendGraphV3">
