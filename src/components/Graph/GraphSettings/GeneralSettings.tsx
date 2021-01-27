@@ -39,7 +39,6 @@ const GeneralSettings = ({settings, handleChange, handleSliderChange}: Props) =>
                         handleSliderChange={handleSliderChange("timeoutMultiplier")}
                     />
                 </ListItem>
-
             </List>
         </Accordion>
     )

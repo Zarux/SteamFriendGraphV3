@@ -1,4 +1,4 @@
-import {Avatar, createStyles, makeStyles, Theme, Typography} from "@material-ui/core";
+import {createStyles, makeStyles, Theme} from "@material-ui/core";
 import React from "react";
 import {SteamProfile} from "../../../types/types";
 import clsx from "clsx";
@@ -47,6 +47,11 @@ const useStyles = makeStyles((theme: Theme) =>
         steamOffline: {
             color: "#898989",
             borderColor: "#898989"
+        },
+        hover: {
+            '&:hover': {
+                border: "1px solid gray",
+            },
         }
     }),
 );
@@ -58,18 +63,19 @@ const Profile = ({profile, root, onHover}: Props) => {
     }
     return (
         <div
-            className={clsx(classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline), root && classes.rootRoot)}
-            onMouseEnter={()=>{
+            className={clsx(classes.hover, classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline), root && classes.rootRoot)}
+            onMouseEnter={() => {
                 onHover[0](profile?.steamid)
             }}
-            onMouseLeave={()=>{
+            onMouseLeave={() => {
                 onHover[1](profile?.steamid)
             }}
         >
-            <div style={{
-                borderRightStyle: "solid",
-                borderRightWidth: "4px"
-            }}>
+            <div
+                style={{
+                    borderRightStyle: "solid",
+                    borderRightWidth: "4px"
+                }}>
                 <img
                     src={profile?.avatarmedium}
                     alt=""
@@ -83,7 +89,7 @@ const Profile = ({profile, root, onHover}: Props) => {
                 className={clsx(classes.textArea, profile?.realname && classes.withExtraText)}
             >
                 {profile?.personaname}
-                <br />
+                <br/>
                 <span className={classes.extraText}>
                     {profile?.realname}
                 </span>

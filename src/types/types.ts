@@ -42,7 +42,7 @@ export type FriendGraph = {
 export type GSettings = {
     minDegrees: number
     timeoutMultiplier: number
-    scalingMode: string
+    scalingModeOutside: boolean
     iterationsPerRender: number
     startingIterations: number
     gravity: number
@@ -51,8 +51,7 @@ export type GSettings = {
     strongGravityMode: boolean
     background: boolean
     scalingRatio: number
-    maxNodeSize: number
-    minNodeSize: number
+    nodeSizeRange: number[]
 }
 
 type Progress = {

@@ -17,7 +17,7 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
     const classes = useGlobalStyles();
     return (
         <div className={clsx(classes.margin, classes.drawerItem)}>
-            <Typography className={classes.text} id="discrete-slider-min-degree">
+            <Typography className={classes.text} id="discrete-slider">
                 {label}
             </Typography>
             <Slider
@@ -29,7 +29,7 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
                 valueLabelDisplay="off"
                 min={min}
                 max={max}
-                aria-labelledby="discrete-slider-min-degree"
+                aria-labelledby="discrete-slider"
                 onChange={handleSliderChange}
             />
             <Input
@@ -46,7 +46,7 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
                     step: step,
                     min: min,
                     type: 'number',
-                    'aria-labelledby': 'discrete-slider-min-degree',
+                    'aria-labelledby': 'discrete-slider',
                     style: {textAlign: "center"}
                 }}
             />

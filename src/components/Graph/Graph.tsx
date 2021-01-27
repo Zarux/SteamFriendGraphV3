@@ -15,7 +15,7 @@ import GraphFriends from "./GraphFriends/GraphFriends";
 
 const defaultSettings: GSettings = {
     minDegrees: 2,
-    scalingMode: "outside",
+    scalingModeOutside: true,
     iterationsPerRender: 1,
     timeoutMultiplier: 2,
     gravity: 0.5,
@@ -25,8 +25,7 @@ const defaultSettings: GSettings = {
     strongGravityMode: false,
     background: false,
     scalingRatio: 2,
-    minNodeSize: 2,
-    maxNodeSize: 15
+    nodeSizeRange: [2, 15]
 }
 
 const Graph = () => {
@@ -75,6 +74,7 @@ const Graph = () => {
     useEffect(() => {
         if (graphRendered && progress.graph) {
             setProgress({...progress, graph: {complete: true}})
+            setFocusedProfile(rootId)
         }
     }, [graphRendered])
 
@@ -85,14 +85,17 @@ const Graph = () => {
     }, [tempGSettings])
 
     const onGenerate = (id: string) => {
-        setGraphRendered(false)
-        setGSettings(tempGSettings)
         if (id === lastSearch) {
             setProgress({
                 friends: {complete: true},
                 graph: {complete: false},
                 labels: {complete: progress.labels === undefined || progress.labels?.complete}
             })
+        }
+        setGraphRendered(false)
+        setFocusedProfile("")
+        setGSettings(tempGSettings)
+        if(id === lastSearch){
             return
         }
         setProgress({

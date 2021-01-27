@@ -68,7 +68,7 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
             settings={{
                 drawEdges: true,
                 clone: false,
-                scalingMode: settings.scalingMode,
+                scalingMode: settings.scalingModeOutside ? "outside": "inside",
                 batchEdgesDrawing: false,
                 immutable: false,
                 verbose: true,
@@ -76,8 +76,8 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
                 defaultNodeColor: defColor,
                 defaultEdgeColor: "#2e2e2e",
                 edgeColor: "default",
-                maxNodeSize: settings.maxNodeSize,
-                minNodeSize: settings.minNodeSize,
+                minNodeSize: settings.nodeSizeRange[0],
+                maxNodeSize: settings.nodeSizeRange[1],
                 zoomMax: 3
             }}
             style={{
@@ -91,7 +91,7 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
             }}
         >
             <SigmaEnableWebGL/>
-            <RelativeSize initialSize={settings.minNodeSize}/>
+            <RelativeSize initialSize={settings.nodeSizeRange[0]}/>
 
             <ForceLink
                 barnesHutOptimize={true}
@@ -103,13 +103,18 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
                 linLogMode={settings.linLogMode}
                 iterationsPerRender={settings.iterationsPerRender}
                 alignNodeSiblings={true}
+                scalingRatio={settings.scalingRatio}
                 timeout={timeout}
             />
             <Filter nodesBy={function (this: any, n: SigmaNode) {
                 return this.degree(n.id) >= settings.minDegrees;
             }}/>
             <SigmaLabels labels={labels}/>
-            <SigmaColors markedNode={markedNode} timeout={timeout} defaultColor={defColor}/>
+            <SigmaColors
+                markedNode={markedNode}
+                timeout={timeout}
+                defaultColor={defColor}
+            />
         </Sigma>
     )
 }
