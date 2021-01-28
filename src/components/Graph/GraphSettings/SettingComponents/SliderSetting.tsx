@@ -6,14 +6,14 @@ import clsx from "clsx";
 type SliderSettingProps = {
     label: string
     value: number
-    handleSliderChange: (event: any, newValue: number | number[]) => void
-    handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onSliderChange: (event: any, newValue: number | number[]) => void
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     min: number
     max: number
     step?: number
 }
 
-const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max, step}: SliderSettingProps) => {
+const SliderSetting = ({label, value, onSliderChange, onChange, min, max, step}: SliderSettingProps) => {
     const classes = useGlobalStyles();
     return (
         <div className={clsx(classes.margin, classes.drawerItem)}>
@@ -30,7 +30,7 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
                 min={min}
                 max={max}
                 aria-labelledby="discrete-slider"
-                onChange={handleSliderChange}
+                onChange={onSliderChange}
             />
             <Input
                 className={classes.text}
@@ -40,7 +40,7 @@ const SliderSetting = ({label, value, handleSliderChange, handleChange, min, max
                     marginLeft: "5%"
                 }}
                 value={value}
-                onChange={handleChange}
+                onChange={onChange}
                 margin="dense"
                 inputProps={{
                     step: step,

@@ -1,28 +1,25 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core";
+import {createStyles, IconButton, makeStyles, Theme} from "@material-ui/core";
 import React from "react";
 import {SteamProfile} from "../../../types/types";
 import clsx from "clsx";
-
-type Props = {
-    profile?: SteamProfile
-    onHover: ((profileId: string) => void)[]
-    root?: boolean
-}
+import SearchIcon from "@material-ui/icons/Search";
+import LinkIcon from '@material-ui/icons/Link';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        flex: {
+            display: "flex",
+        },
         root: {
             display: "flex",
-            width: 290,
-            height: 48,
+            width: "270px",
+            height: "48px",
             backgroundColor: "#1C262F"
         },
         rootRoot: {
-            width: '90%',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            marginTop: 10,
-            marginBottom: 10
+            paddingLeft: "16px",
+            marginTop: "10px",
+            marginBottom: "10px"
         },
         textArea: {
             overflow: "hidden",
@@ -42,57 +39,100 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         steamOnline: {
             color: "#57cbde",
-            borderColor: "#57cbde"
+            borderColor: "#57cbde",
+            '&:hover': {
+                border: "1px solid #57cbde",
+            },
         },
         steamOffline: {
             color: "#898989",
-            borderColor: "#898989"
+            borderColor: "#898989",
+            '&:hover': {
+                border: "1px solid #898989",
+            },
         },
         hover: {
             '&:hover': {
                 border: "1px solid gray",
             },
+        },
+        iconButton: {
+            color: "white",
+            width: "15px",
+            padding: 0,
+            paddingLeft: "15%"
+        },
+        icon: {
+            width: "15px",
+            height: "15px"
         }
     }),
 );
 
-const Profile = ({profile, root, onHover}: Props) => {
+type Props = {
+    profile?: SteamProfile
+    onHover: ((profileId: string) => void)[]
+    onProfileSearch: (steamId: string) => void
+    root?: boolean,
+}
+
+const Profile = ({profile, root, onHover, onProfileSearch}: Props) => {
     const classes = useStyles();
     if (profile === undefined) {
         return <div/>
     }
     return (
-        <div
-            className={clsx(classes.hover, classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline), root && classes.rootRoot)}
-            onMouseEnter={() => {
-                onHover[0](profile?.steamid)
-            }}
-            onMouseLeave={() => {
-                onHover[1](profile?.steamid)
-            }}
-        >
+        <div className={clsx(classes.flex, root && classes.rootRoot)}>
             <div
-                style={{
-                    borderRightStyle: "solid",
-                    borderRightWidth: "4px"
-                }}>
-                <img
-                    src={profile?.avatarmedium}
-                    alt=""
-                    style={{
-                        height: 48,
-                        width: 48
-                    }}
-                />
-            </div>
-            <div
-                className={clsx(classes.textArea, profile?.realname && classes.withExtraText)}
+                className={clsx(classes.root, (profile.personastate === 0 ? classes.steamOffline : classes.steamOnline))}
+                onMouseEnter={() => {
+                    onHover[0](profile?.steamid)
+                }}
+                onMouseLeave={() => {
+                    onHover[1](profile?.steamid)
+                }}
             >
-                {profile?.personaname}
-                <br/>
-                <span className={classes.extraText}>
-                    {profile?.realname}
-                </span>
+                <div
+                    style={{
+                        borderRightStyle: "solid",
+                        borderRightWidth: "4px"
+                    }}>
+                    <img
+                        src={profile?.avatarmedium}
+                        alt=""
+                        style={{
+                            height: 48,
+                            width: 48
+                        }}
+                    />
+                </div>
+                <div
+                    className={clsx(classes.textArea, profile?.realname && classes.withExtraText)}
+                >
+                    <div>
+                        {profile?.personaname}
+                        <br/>
+                        <span className={classes.extraText}>
+                        {profile?.realname}
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div style={{
+                width: 20,
+                backgroundColor: "#1f1f1f"
+            }}>
+                <IconButton className={classes.iconButton} href={profile.profileurl}>
+                    <LinkIcon className={classes.icon}/>
+                </IconButton>
+                <IconButton
+                    className={classes.iconButton}
+                    onClick={() => {
+                        onProfileSearch(profile?.steamid)
+                    }}
+                >
+                    <SearchIcon className={classes.icon}/>
+                </IconButton>
             </div>
         </div>
     )

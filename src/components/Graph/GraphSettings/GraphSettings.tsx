@@ -1,11 +1,6 @@
 import {
-    IconButton,
-    Drawer,
-    Divider,
-    FormControl,
-    OutlinedInput,
-    InputAdornment,
-    Button, List, ListItem, Accordion, AccordionSummary
+    IconButton, Drawer, Divider, FormControl,
+    OutlinedInput, InputAdornment, Button, List, ListItem
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
@@ -22,6 +17,7 @@ import AdvancedSettings from "./AdvancedSettings";
 
 
 type Props = {
+    searchField: string
     settings: GSettings
     onSettingChange: (settings: GSettings) => void
     onGenerate: (id: string) => void,
@@ -29,11 +25,11 @@ type Props = {
     onUserSearch: () => void
 }
 
-const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, onUserSearch}: Props) => {
+const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, progressStatus, onUserSearch}: Props) => {
     const context = useContext(AppContext)
     const classes = useGlobalStyles();
     const [open, setOpen] = useState(true);
-    const [id, setId] = useState((context.url && context.url.searchParams.get("id")) || "")
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -45,9 +41,11 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, o
     const handleChange = (prop: keyof GSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
         if (typeof settings[prop] === "number") {
             onSettingChange({...settings, [prop]: parseFloat(event.target.value)});
-            return
+        } else if (typeof settings[prop] === "boolean") {
+            onSettingChange({...settings, [prop]: event.target.checked});
+        } else {
+            onSettingChange({...settings, [prop]: event.target.value});
         }
-        onSettingChange({...settings, [prop]: event.target.value});
     };
 
     const handleSliderChange = (prop: keyof GSettings) => (event: any, newValue: number | number[]) => {
@@ -94,9 +92,8 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, o
                         labelWidth={0}
                         placeholder="Steam ID"
                         type="text"
-                        value={id}
+                        value={searchField}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            setId(event.target.value)
                             onUserSearch()
                         }}
                         endAdornment={
@@ -115,8 +112,8 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, o
                     value={settings.minDegrees}
                     min={1}
                     max={10}
-                    handleChange={handleChange("minDegrees")}
-                    handleSliderChange={handleSliderChange("minDegrees")}
+                    onChange={handleChange("minDegrees")}
+                    onSliderChange={handleSliderChange("minDegrees")}
                 />
                 <Divider/>
                 <div
@@ -151,7 +148,7 @@ const GraphSettings = ({settings, onGenerate, onSettingChange, progressStatus, o
                             }}
                             variant="outlined"
                             onClick={() => {
-                                onGenerate(id)
+                                onGenerate(searchField)
                             }}
                         >
                             Generate graph

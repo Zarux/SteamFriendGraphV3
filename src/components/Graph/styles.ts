@@ -4,6 +4,9 @@ import {Theme} from "@material-ui/core";
 const drawerWidth = 350;
 
 const useGlobalStyles = makeStyles((theme: Theme) => ({
+    flex: {
+        display: "flex"
+    },
     drawer: {
         width: drawerWidth,
         flexShrink: 0,

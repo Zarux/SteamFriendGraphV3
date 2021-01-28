@@ -8,9 +8,10 @@ import {FriendProfiles, SteamProfile} from "../../../types/types";
 type Props = {
     friendProfiles: FriendProfiles
     onProfileHover: ((profileId: string) => void)[]
+    onProfileSearch: (steamId: string) => void
 }
 
-const GraphFriends = ({friendProfiles, onProfileHover}: Props) => {
+const GraphFriends = ({friendProfiles, onProfileHover, onProfileSearch}: Props) => {
     const classes = useGlobalStyles();
     const [open, setOpen] = useState(false)
 
@@ -40,8 +41,13 @@ const GraphFriends = ({friendProfiles, onProfileHover}: Props) => {
                     </IconButton>
                 </div>
                 <Divider/>
-                <Profile profile={friendProfiles.profile} root={true} onHover={onProfileHover}/>
-                <Divider/>
+                <Profile
+                    profile={friendProfiles.profile}
+                    root={true}
+                    onHover={onProfileHover}
+                    onProfileSearch={onProfileSearch}
+                />
+                <Divider style={{height: 4}}/>
                 <List>
                     {friendProfiles.friends?.map((friend: SteamProfile) => {
                         return (
@@ -49,6 +55,7 @@ const GraphFriends = ({friendProfiles, onProfileHover}: Props) => {
                                 <Profile
                                     profile={friend}
                                     onHover={onProfileHover}
+                                    onProfileSearch={onProfileSearch}
                                 />
                             </ListItem>
                         )

@@ -60,7 +60,7 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
     if (!graph.nodes.length && !graph.edges.length) {
         return <div/>
     }
-    console.log(settings)
+
     return (
         <Sigma
             renderer="webgl"
@@ -76,12 +76,13 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
                 defaultNodeColor: defColor,
                 defaultEdgeColor: "#2e2e2e",
                 edgeColor: "default",
-                minNodeSize: settings.nodeSizeRange[0],
-                maxNodeSize: settings.nodeSizeRange[1],
-                zoomMax: 3
+                minNodeSize: settings.minNodeSize,
+                maxNodeSize: settings.maxNodeSize,
+                zoomMax: 3,
+                labelThreshold: settings.labelThreshold
             }}
             style={{
-                width: "90%",
+                width: "99%",
                 height: "98vh",
             }}
             onClickNode={(nodeEvent: SigmaNodeEvent) => {
@@ -91,16 +92,18 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
             }}
         >
             <SigmaEnableWebGL/>
-            <RelativeSize initialSize={settings.nodeSizeRange[0]}/>
+            <RelativeSize initialSize={settings.minNodeSize}/>
 
             <ForceLink
                 barnesHutOptimize={true}
+                background={settings.background}
                 barnesHutTheta={settings.barnesHutTheta}
                 worker={true}
                 strongGravityMode={settings.strongGravityMode}
                 gravity={settings.gravity}
                 randomize="globally"
                 linLogMode={settings.linLogMode}
+                startingIterations={settings.startingIterations}
                 iterationsPerRender={settings.iterationsPerRender}
                 alignNodeSiblings={true}
                 scalingRatio={settings.scalingRatio}
@@ -112,7 +115,7 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
             <SigmaLabels labels={labels}/>
             <SigmaColors
                 markedNode={markedNode}
-                timeout={timeout}
+                timeout={timeout + (settings.background ? 2000 : 0)}
                 defaultColor={defColor}
             />
         </Sigma>

@@ -51,7 +51,9 @@ export type GSettings = {
     strongGravityMode: boolean
     background: boolean
     scalingRatio: number
-    nodeSizeRange: number[]
+    minNodeSize: number
+    maxNodeSize: number
+    labelThreshold: number
 }
 
 type Progress = {

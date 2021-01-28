@@ -13,6 +13,10 @@ import {
 } from "../../types/types";
 import GraphFriends from "./GraphFriends/GraphFriends";
 
+const ENDPOINT_GENERATE_GRAPH_DATA = "generateGraphData"
+const ENDPOINT_GENERATE_LABELS = "generateLabels"
+const ENDPOINT_GET_FRIEND_PROFILES = "getFriendProfiles"
+
 const defaultSettings: GSettings = {
     minDegrees: 2,
     scalingModeOutside: true,
@@ -25,28 +29,34 @@ const defaultSettings: GSettings = {
     strongGravityMode: false,
     background: false,
     scalingRatio: 2,
-    nodeSizeRange: [2, 15]
+    minNodeSize: 2,
+    maxNodeSize: 15,
+    labelThreshold: 8
 }
 
 const Graph = () => {
     const context = useContext(AppContext)
-    const [lastSearch, setLastSearch] = useState("")
-    const [rootId, setRootId] = useState("")
-    const [graphData, setGraphData] = useState<SigmaGraph>({nodes: [], edges: []})
+    const [graphData, setGraphData] = useState<{ graph: SigmaGraph, rootId: string, focusedProfile: string }>({
+        graph: {nodes: [], edges: []},
+        rootId: "",
+        focusedProfile: ""
+    })
     const [labels, setLabels] = useState<Labels>({})
-    const [gSettings, setGSettings] = useState<GSettings>(defaultSettings)
-    const [tempGSettings, setTempGSettings] = useState<GSettings>(defaultSettings)
+    const [gSettings, setGSettings] = useState<{ real: GSettings, temp: GSettings }>({
+        real: defaultSettings,
+        temp: defaultSettings
+    })
     const [friendProfiles, setFriendProfiles] = useState<FriendProfiles>({})
-    const [focusedProfile, setFocusedProfile] = useState("")
     const [progress, setProgress] = useState<ProgressStatus>({})
     const [graphRendered, setGraphRendered] = useState(false)
+    const [searchField, setSearchField] = useState((context.url && context.url.searchParams.get("id")) || "")
 
     if (context.ws) {
         context.ws.onmessage = (event: MessageEvent) => {
             const data: ResponseMessage = JSON.parse(event.data)
-            if (data.endpoint === "generateGraphData") {
+            if (data.endpoint === ENDPOINT_GENERATE_GRAPH_DATA) {
                 if (context.ws) {
-                    context.ws.send(JSON.stringify({endpoint: "generateLabels", id: ""}))
+                    context.ws.send(JSON.stringify({endpoint: ENDPOINT_GENERATE_LABELS, id: ""}))
                 }
                 setProgress({
                     graph: {complete: false},
@@ -54,17 +64,19 @@ const Graph = () => {
                     friends: {complete: true}
                 })
                 const gData: FriendGraph = JSON.parse(data.data)
-                setFocusedProfile(gData.rootId)
-                setRootId(gData.rootId)
-                setGraphData({nodes: gData.nodes, edges: gData.edges})
-            } else if (data.endpoint === "generateLabels") {
+                setGraphData({
+                    graph: {nodes: gData.nodes, edges: gData.edges},
+                    focusedProfile: gData.rootId,
+                    rootId: gData.rootId
+                })
+            } else if (data.endpoint === ENDPOINT_GENERATE_LABELS) {
                 const labels: Labels = JSON.parse(data.data)
                 setProgress({
                     ...progress,
                     labels: {complete: true}
                 })
                 setLabels(labels)
-            } else if (data.endpoint === "getFriendProfiles") {
+            } else if (data.endpoint === ENDPOINT_GET_FRIEND_PROFILES) {
                 const friends: FriendProfiles = JSON.parse(data.data)
                 setFriendProfiles(friends)
             }
@@ -74,7 +86,10 @@ const Graph = () => {
     useEffect(() => {
         if (graphRendered && progress.graph) {
             setProgress({...progress, graph: {complete: true}})
-            setFocusedProfile(rootId)
+            setGraphData({
+                ...graphData,
+                focusedProfile: graphData.rootId,
+            })
         }
     }, [graphRendered])
 
@@ -82,70 +97,75 @@ const Graph = () => {
         if (progress.graph?.complete && progress.labels?.complete && progress.friends?.complete) {
             setProgress({})
         }
-    }, [tempGSettings])
+    }, [gSettings.temp])
 
     const onGenerate = (id: string) => {
-        if (id === lastSearch) {
-            setProgress({
-                friends: {complete: true},
-                graph: {complete: false},
-                labels: {complete: progress.labels === undefined || progress.labels?.complete}
-            })
-        }
-        setGraphRendered(false)
-        setFocusedProfile("")
-        setGSettings(tempGSettings)
-        if(id === lastSearch){
-            return
-        }
         setProgress({
             friends: {complete: false},
             labels: {complete: false},
             graph: {complete: false}
         })
-        setGraphData({nodes: [], edges: []})
+        setGraphData({
+            graph: {nodes: [], edges: []},
+            rootId: "",
+            focusedProfile: ""
+        })
+        setGraphRendered(false)
+        setGSettings({...gSettings, real: gSettings.temp})
         if (context.url) {
             context.url.searchParams.set("id", id)
             context.url.search = context.url.searchParams.toString()
             window.history.pushState({path: context.url.toString()}, id, context.url.toString())
         }
         if (context.ws) {
-            context.ws.send(JSON.stringify({endpoint: "generateGraphData", id: id}))
+            context.ws.send(JSON.stringify({endpoint: ENDPOINT_GENERATE_GRAPH_DATA, id: id}))
             setProgress({...progress, friends: {complete: false}})
-            setLastSearch(id)
         }
     }
 
     const handleProfileHover = [
         (profileId: string) => {
-            setFocusedProfile(profileId)
+            setGraphData({
+                ...graphData,
+                focusedProfile: profileId,
+            })
         },
         (profileId: string) => {
-            setFocusedProfile(rootId)
+            setGraphData({
+                ...graphData,
+                focusedProfile: graphData.rootId,
+            })
         }
     ]
+
+    const handleUserSearch = () => {
+        if (progress.friends !== undefined) {
+            setProgress({})
+        }
+    }
+
+    const handleProfileSearch = (steamId: string) => {
+        setSearchField(steamId)
+        handleUserSearch()
+    }
 
     return (
         <div>
             <GraphSettings
-                settings={tempGSettings}
-                onUserSearch={() => {
-                    if(progress.friends !== undefined) {
-                        setProgress({})
-                    }
-                }}
+                searchField={searchField}
+                settings={gSettings.temp}
+                onUserSearch={handleUserSearch}
                 onGenerate={onGenerate}
                 onSettingChange={(settings: GSettings) => {
-                    setGSettings({...gSettings, minDegrees: settings.minDegrees})
-                    setTempGSettings(settings)
+                    setGSettings({real: {...gSettings.real, minDegrees: settings.minDegrees}, temp: settings})
                 }}
                 progressStatus={progress}
             />
             <GraphArea
-                graph={graphData}
+                graph={graphData.graph}
                 labels={labels}
-                settings={gSettings}
-                markedNode={focusedProfile}
+                settings={gSettings.real}
+                markedNode={graphData.focusedProfile}
                 onComplete={() => {
                     setGraphRendered(true)
                 }}
@@ -153,6 +173,7 @@ const Graph = () => {
             <GraphFriends
                 friendProfiles={friendProfiles}
                 onProfileHover={handleProfileHover}
+                onProfileSearch={handleProfileSearch}
             />
         </div>
     )
