@@ -99,7 +99,7 @@ const Graph = () => {
     }, [graphRendered])
 
     useEffect(() => {
-        if (progress.graph?.complete && progress.labels?.complete && progress.friends?.complete) {
+        if (progress.friends?.complete) {
             setProgress({})
         }
     }, [gSettings.temp])
