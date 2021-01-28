@@ -54,6 +54,11 @@ const Graph = () => {
     if (context.ws) {
         context.ws.onmessage = (event: MessageEvent) => {
             const data: ResponseMessage = JSON.parse(event.data)
+
+            if(data.err){
+                alert(data.err)
+                return
+            }
             if (data.endpoint === ENDPOINT_GENERATE_GRAPH_DATA) {
                 if (context.ws) {
                     context.ws.send(JSON.stringify({endpoint: ENDPOINT_GENERATE_LABELS, id: ""}))
