@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SFG",
+  "name": "Steam Friend Graph",
   "icons": [],
   "start_url": ".",
   "display": "standalone",
