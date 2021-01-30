@@ -13,6 +13,7 @@ import {
 } from "../../types/types";
 import GraphFriends from "./GraphFriends/GraphFriends";
 
+const ENDPOINT_PING = "ping"
 const ENDPOINT_GENERATE_GRAPH_DATA = "generateGraphData"
 const ENDPOINT_GENERATE_LABELS = "generateLabels"
 const ENDPOINT_GET_FRIEND_PROFILES = "getFriendProfiles"
@@ -84,6 +85,8 @@ const Graph = () => {
             } else if (data.endpoint === ENDPOINT_GET_FRIEND_PROFILES) {
                 const friends: FriendProfiles = JSON.parse(data.data)
                 setFriendProfiles(friends)
+            }else if(data.endpoint === ENDPOINT_PING){
+                console.log(data)
             }
         }
     }
