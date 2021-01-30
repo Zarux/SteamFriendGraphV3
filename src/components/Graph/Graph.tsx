@@ -19,7 +19,7 @@ const ENDPOINT_GENERATE_LABELS = "generateLabels"
 const ENDPOINT_GET_FRIEND_PROFILES = "getFriendProfiles"
 
 const defaultSettings: GSettings = {
-    minDegrees: 2,
+    minDegrees: 1,
     scalingModeOutside: true,
     iterationsPerRender: 1,
     timeoutMultiplier: 2,
@@ -29,8 +29,8 @@ const defaultSettings: GSettings = {
     linLogMode: false,
     strongGravityMode: false,
     background: false,
-    scalingRatio: 2,
-    minNodeSize: 2,
+    scalingRatio: 5,
+    minNodeSize: 1,
     maxNodeSize: 15,
     labelThreshold: 8
 }
