@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install yarn -g
           yarn
-          yarn zip && ls build.zip
+          CI='' yarn zip && ls build.zip
 
       - name: Create Release
         if: steps.check.outputs.changed == 'true'
