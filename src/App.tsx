@@ -14,7 +14,7 @@ export const AppContext = React.createContext<AppContextProps>({
 const createWs = () => {
     const wsUrl = process.env.REACT_APP_WS_URL || ""
     if (wsUrl === "") {
-        alert("Missing ENV WS_URL")
+        alert("Missing ENV REACT_APP_WS_URL")
     }
     return new WebSocket(wsUrl)
 }
