@@ -18,6 +18,9 @@ type Props = {
 const App = ({ws}: Props) => {
     ws.onopen = () => {
         ws.send(JSON.stringify({endpoint: "ping", id: "0"}))
+        setInterval(() => {
+            ws.send(JSON.stringify({endpoint: "ping", id: "0"}))
+        }, 60 * 1000)
     }
     const windowUrl = window.location.href;
     const url = new URL(windowUrl);

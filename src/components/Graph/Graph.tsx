@@ -55,7 +55,7 @@ const Graph = () => {
         context.ws.onmessage = (event: MessageEvent) => {
             const data: ResponseMessage = JSON.parse(event.data)
 
-            if(data.err){
+            if (data.err) {
                 alert(data.err)
                 return
             }
@@ -143,7 +143,10 @@ const Graph = () => {
         }
     ]
 
-    const handleUserSearch = () => {
+    const handleUserSearch = (event?: React.ChangeEvent<HTMLInputElement>) => {
+        if (event !== undefined) {
+            setSearchField(event.target.value)
+        }
         if (progress.friends !== undefined) {
             setProgress({})
         }

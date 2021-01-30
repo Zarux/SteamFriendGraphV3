@@ -22,11 +22,10 @@ type Props = {
     onSettingChange: (settings: GSettings) => void
     onGenerate: (id: string) => void,
     progressStatus: ProgressStatus
-    onUserSearch: () => void
+    onUserSearch: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, progressStatus, onUserSearch}: Props) => {
-    const context = useContext(AppContext)
     const classes = useGlobalStyles();
     const [open, setOpen] = useState(true);
 
@@ -94,7 +93,7 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                         type="text"
                         value={searchField}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            onUserSearch()
+                            onUserSearch(event)
                         }}
                         endAdornment={
                             <InputAdornment position="end">

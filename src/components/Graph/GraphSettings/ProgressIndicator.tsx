@@ -1,9 +1,8 @@
-import React, {useContext, useEffect, useState} from "react";
+import React from "react";
 import {CircularProgress, createStyles, makeStyles, Theme} from "@material-ui/core";
 import CheckIcon from '@material-ui/icons/Check'
 import useGlobalStyles from "../styles";
 import clsx from "clsx";
-import {type} from "os";
 
 type Props = {
     label: string
