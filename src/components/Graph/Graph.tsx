@@ -23,7 +23,7 @@ const defaultSettings: GSettings = {
     scalingModeOutside: true,
     iterationsPerRender: 1,
     timeoutMultiplier: 2,
-    gravity: 0.5,
+    gravity: 2,
     barnesHutTheta: 1.0,
     startingIterations: 1,
     linLogMode: false,

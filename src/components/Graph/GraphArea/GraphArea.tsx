@@ -75,9 +75,12 @@ const GraphArea = ({graph, labels, settings, markedNode, onComplete}: Props) => 
                 defaultLabelColor: "#AAAAAA",
                 defaultNodeColor: defColor,
                 defaultEdgeColor: "#2e2e2e",
+                defaultHoverLabelBGColor: "#232323",
+                defaultLabelHoverColor: "#ddd",
                 edgeColor: "default",
                 minNodeSize: settings.minNodeSize,
                 maxNodeSize: settings.maxNodeSize,
+                zoomRatio: 1.2,
                 zoomMax: 3,
                 labelThreshold: settings.labelThreshold
             }}

@@ -6,14 +6,14 @@ import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SearchIcon from "@material-ui/icons/Search";
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {GSettings, ProgressStatus} from "../../../types/types";
-import {AppContext} from "../../../App";
 import useGlobalStyles from "../styles";
 import SliderSetting from "./SettingComponents/SliderSetting";
 import ProgressIndicator from "./ProgressIndicator";
 import GeneralSettings from "./GeneralSettings";
 import AdvancedSettings from "./AdvancedSettings";
+import clsx from "clsx";
 
 
 type Props = {
@@ -85,7 +85,7 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                     </IconButton>
                 </div>
                 <Divider/>
-                <FormControl variant="outlined" className={classes.margin}>
+                <FormControl variant="outlined" className={clsx(classes.margin, classes.drawerItem)}>
                     <OutlinedInput
                         id="outlined-adornment-id"
                         labelWidth={0}
@@ -95,13 +95,18 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             onUserSearch(event)
                         }}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <span className={classes.text}>Steam ID:</span>
+                            </InputAdornment>
+                        }
                         endAdornment={
                             <InputAdornment position="end">
-                                <SearchIcon/>
+                                <SearchIcon style={{color: "#aaa"}}/>
                             </InputAdornment>
                         }
                         inputProps={{
-                            className: classes.text,
+                            className: classes.text
                         }}
                     />
                 </FormControl>
@@ -119,7 +124,7 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                     style={{
                         overflowY: "auto",
                         overflowX: "hidden",
-                        height: "55vh"
+                        height: "52vh"
                     }}
                 >
                     <GeneralSettings
@@ -133,11 +138,12 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                         handleSliderChange={handleSliderChange}
                     />
                 </div>
-                <div className={classes.drawerFooter} style={{height: "19vh"}}>
+                <div className={classes.drawerFooter} style={{height: "18vh"}}>
                     <Divider/>
                     {
                         !inProgress &&
                         <Button
+                            disabled={searchField.length === 0}
                             className={classes.margin}
                             style={{
                                 color: "#aaa",
@@ -145,7 +151,8 @@ const GraphSettings = ({searchField, settings, onGenerate, onSettingChange, prog
                                 height: "9vh",
                                 marginTop: "6vh"
                             }}
-                            variant="outlined"
+                            variant="contained"
+                            color="primary"
                             onClick={() => {
                                 onGenerate(searchField)
                             }}

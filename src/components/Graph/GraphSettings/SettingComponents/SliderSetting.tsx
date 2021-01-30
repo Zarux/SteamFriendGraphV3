@@ -22,7 +22,8 @@ const SliderSetting = ({label, value, onSliderChange, onChange, min, max, step}:
             </Typography>
             <Slider
                 style={{
-                    width: "80%"
+                    width: "80%",
+                    marginLeft: "1%"
                 }}
                 value={value}
                 step={step}
