@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install yarn -g
           yarn
-          CI='' WS_URL="${{ secrets.WS_URL }}" yarn zip && ls build.zip
+          CI='' WS_URL="${{ secrets.REACT_APP_WS_URL }}" yarn zip && ls build.zip
 
       - name: Create Release
         if: steps.check.outputs.changed == 'true'
