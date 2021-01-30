@@ -85,8 +85,8 @@ const Graph = () => {
             } else if (data.endpoint === ENDPOINT_GET_FRIEND_PROFILES) {
                 const friends: FriendProfiles = JSON.parse(data.data)
                 setFriendProfiles(friends)
-            }else if(data.endpoint === ENDPOINT_PING){
-                console.log(data)
+            } else if (data.endpoint === ENDPOINT_PING) {
+                console.log(data.data)
             }
         }
     }

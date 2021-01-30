@@ -29,7 +29,7 @@ const App = () => {
             ws.send(JSON.stringify({endpoint: "ping", id: ""}))
             setInterval(() => {
                 ws.send(JSON.stringify({endpoint: "ping", id: ""}))
-            }, 60 * 1000)
+            }, 30 * 1000)
         }
         ws.onclose = () => {
             setWs(createWs())
